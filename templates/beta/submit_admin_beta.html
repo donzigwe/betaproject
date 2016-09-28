@@ -1,0 +1,35 @@
+{% extends 'beta/admin.html' %}
+{% load i18n %}
+{% load myforms %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% block admin %}
+    <div class="row">
+        <div class="col-md-6 col-md-push-2 submit-header">
+            <h1>Add Startup</h1>
+            <div class="panel panel-default submit-beta">
+                <div class="panel-body">
+                    <form action="{#% url 'beta:edit_startup' beta_user.startup_id %#}" method="post" class="form"
+                    enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {% bootstrap_form beta_form %}
+                      {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                          {% bootstrap_icon "star" %} Submit
+                        </button>
+                      {% endbuttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock admin %}

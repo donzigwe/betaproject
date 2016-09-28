@@ -1,0 +1,104 @@
+{% extends 'beta/admin.html' %}
+{% load disqus_tags %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+{% load myforms %}
+
+{% block admin %}
+<div class="row">
+    <div class="col-md-8 col-md-push-2">
+        {% if admin_startup %}
+        <h1>{{ admin_startup.startup }}<br><small>{{ admin_startup.tagline }}</small></h1>
+        <ul class="list-inline">
+            {% if not beta_details.status == 'Live' %}
+            <li><span>Launching in </span>{{ admin_startup.launching|timeuntil }}</li>
+            {% else %}
+            <li>Live</li>
+            {% endif %}
+            <li>{{ admin_startup.tag }}</li>
+            <li>{{ admin_startup.city }} {{ admin_startup.country }}
+            {{ admin_startup.region }}</li>
+        </ul>
+        {% thumbnail admin_startup.home_page "600x330" as im %}
+        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+        alt="{{ beta_details.startup }} image">
+        {% endthumbnail %}
+        <p>{{ admin_startup.description }}</p>
+        <ul class="list-inline">
+            <li><a class="btn btn-primary" href="{{ beta_details.url }}" role="button"
+            target="_blank">Visit Site</a></li>
+            <li><a class="btn btn-primary" href="{% url 'beta:admin_signups' admin_startup.startup_id %}" role="button">Signup</a></li>
+            <li>{% if len_signups == 1 %}{{ len_signups }} <span>Signup
+            </span>{% else %} {{ len_signups }} <span>signups</span> {% endif %}</li>
+            <li><a class="btn btn-primary" href="{{ beta_details.url }}" role="button"
+            target="_blank">Add Team</a></li>
+            <li><a class="btn btn-primary" href="{% url 'beta:edit_startup' admin_startup.startup_id %}" role="button"
+            >Edit</a></li>
+        </ul>
+    </div>
+</div>
+{% else %}
+<div>
+    <div>
+        <p>There are no details in this startup</p>
+    </div>
+</div>
+{% endif %}
+{% if teams %}
+<div class="row">
+    {% for team in teams %}
+    <div class="col-md-4">
+        {% thumbnail team.photo "200x150" as im %}
+        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+        alt="{{ team.startup }} image">
+        {% endthumbnail %}
+        <ul class="list-unstyled">
+            <li>{{ team.full_name }}</li>
+            <li>{{ team.role }}</li>
+        </ul>
+        <ul class="list-inline">
+            <li><a href="{% url 'beta:delete_team' team.id %}">Delete</a></li>
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="row">
+        <div class="col-md-4 col-md-push-3">
+            <div class="modal fade" id="deletestartupModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Uplaod Photo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-10 col-md-push-1">
+                                <p>Are you sure you want to delete this startup;{{ admin_startup.startup }}?</p>
+                                <ul class="list-inline">
+                                    <li><a class="btn btn-default" href="{% url 'beta:delete_startup' admin_startup.startup_id %}" role="button">Delete</a></li>
+                                    <li><a class="btn btn-default" href="" role="button" data-dismiss="modal">Cancel</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <a class="btn btn-default btn-block" href="" role="button" data-toggle="modal" data-target="#deletestartupModal">Delete</a>
+            
+        </div>
+    </div>
+{% endblock admin %}

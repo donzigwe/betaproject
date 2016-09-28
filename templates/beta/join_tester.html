@@ -1,0 +1,34 @@
+{% extends 'beta/user_admin.html' %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% block beta_user %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 col-md-push-2">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>Add Phone Numbers</h4>
+                    <form action="#" method="post" class="form">
+                      {% csrf_token %}
+                      {% bootstrap_form tester_form %}
+                      {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                          {% bootstrap_icon "star" %} Submit
+                        </button>
+                      {% endbuttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock beta_user %}

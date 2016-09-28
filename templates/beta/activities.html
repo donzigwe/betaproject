@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="container-fluid">
+    <div class="row">
+    <div class="col-md-8 col-md-push-2">
+    <div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">My Notify me</a></li>
+    <li role="presentation"><a href="#messages" aria-controls="profile" role="tab" data-toggle="tab">My Comments</a></li>
+    <li role="presentation"><a href="#settings" aria-controls="profile" role="tab" data-toggle="tab">My Comments</a></li>
+
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">
+       <div class="row">
+        {% for startup in my_signups %}
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="#">
+                    <img src="#">
+                    <p>{{ startup.startup.startup }}</p>
+                    <p>{{ startup.startup.status }} <span>Remaining</span> {{ startup.startup.launching|timeuntil }}</p>
+                    <p>{{ startup.startup.city }} {{ startup.startup.country }} {{ startup.startup.region }}</p>
+                    <p>{{ startup.startup.tagline }}</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+       </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="messages">
+        <div class="row">
+            {% if comments %}
+        {% for startup in comments %}
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <img src="#">
+                    <p>{{ startup.startup.startup }}</p>
+                    <p>{{ startup.comment }}</p>
+                    <a class="btn btn-default" href="{#% url 'beta:comment' startup.id %#}">View Coomments</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>You have not commented on any startup</p>
+        {% endif %}
+       </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="settings">
+        This is a content that I want to really look into 4
+    </div>
+  </div>
+
+</div>
+</div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

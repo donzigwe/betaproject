@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load bootstrap_pagination %}
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+
+{% block main %}
+<div class="container-fluid published-container search">
+{% if results %}
+{% for beta in results %}
+        <div class="col-md-10 col-md-push-1 published">
+            <div class="panel panel-default cont-published">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {#% thumbnail beta.home_page "300x350" as im %#}
+                            <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                            alt="{{ beta.startup }} image" class="img-responsive">
+                           {#% endthumbnail %#}-->
+                        <img src="{{ beta.home_page_thumbnail.url }}"
+                        alt="{{ beta.startup }} image" class="img-responsive">
+                        </div>
+                        <div class="col-md-8">
+                            <h1>{{ beta.startup }}</h1>
+                            <h3>{{ beta.tagline }}</h3>
+                            <p>{{ beta.description|truncatechars:250 }}</p>
+                            <ul class="list-inline pub-details">
+                                <li><i class="fa fa-tag" aria-hidden="true"></i> {{ beta.category }}</i></li>
+                                <li><i class="fa fa-location-arrow" aria-hidden="true"></i> {{ beta.city }}</li>
+                                <li><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="{% url 'beta:country' beta.country %}">{{ beta.country }}</a></li>
+                                <li><i class="fa fa-globe" aria-hidden="true"></i> <a href="{% url 'beta:regions' beta.region %}">{{ beta.region }}</a></li>
+                                <li><i class="fa fa-calendar" aria-hidden="true"></i> {{ beta.pub_date|date:"M d, Y" }}</li>
+                            </ul>
+                            <ul class="list-inline btn-published">
+                                <li><a class="btn btn-default btn-published" href="{% url 'beta:beta_details' beta.id beta.startup %}" role="button">Details</a></li>
+                                {% if not beta.user.is_staff %}
+                                <li><a class="btn btn-default btn-published" href="{% url 'beta:beta_details' beta.id beta.startup %}">Notify Me</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="row">
+        <div class="col-md-6 col-md-push-4">
+            {#% bootstrap_paginate results range=5 previous_label="Prev" next_label="Next" show_first_last="true" first_label="First" last_label="Last" %#}
+        </div>
+    </div>
+{% else %}
+<div class="col-md-4 col-md-push-4 published">
+        <div class="panel panel-default cont-published">
+        <div class="panel-body">
+            <p>No result found for "{{ query }}"</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock main %}

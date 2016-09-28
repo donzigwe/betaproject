@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load myforms %}
+{% block main %}
+
+    <div class="container-fluid published-container">
+        {% if beta_form %}
+        <div class="row">
+            <div class="col-md-6 col-md-push-2 submit-header">
+            <h1>Tell us about your startup or product</h1>
+            <div class="panel panel-default submit-beta" id="submit-startup">
+                <div class="panel-body">
+            <form class="form-horizontal" action="{#% url 'brandid:logo_company' %#}" method="POST"
+            enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Form Name -->
+                {% for field in beta_form %}
+                {# Standard Code for all the TextInput widgets in this app #}
+                {% if field.field.widget|klass == "TextInput" %}
+                <div class="fieldWrapper  form-group">
+                    <label class="col-md-2 control-label" for="{{ field.id_for_label }}">
+                    {{ field.label_tag }}{% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                    <div class="col-md-8 {{ field.required_css_class }}">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                    {% endfor %}
+                    <input id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+                        class="form-control" placeholder="" 
+                        type="text">
+                        <span class="help-block">{{ field.help_text }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {# Standard Code for all the Textarea widgets in this app #}
+                {% if field.field.widget|klass == "Textarea" %}
+                <div class=" fieldWrapper form-group">
+                  <label class="col-md-2 control-label" for="{{ field.id_for_label }}">{{ field.label_tag }}
+                  {% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                  <div class="col-md-8">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                    {% endfor %}
+                    <textarea class="form-control startup-input" id="textarea {{ field.id_for_label }}"
+                    name="{{ field.html_name }}" maxlength="500">
+                    </textarea><span id="charNum"></span>
+                    <span class="help-block">{{ field.help_text }}</span>
+                  </div>
+                </div>
+                {% endif %}
+                {# Standard Code for all the ClearableFileInput widgets in this app #}
+                {% if field.field.widget|klass == "ClearableFileInput" %}
+                <!-- File Button --> 
+                <div class="fieldWrapper form-group">
+                  <label class="col-md-2 control-label" for="{{ field.id_for_label }}">{{ field.label_tag }}
+                  {% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                  <div class="col-md-8 upload">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                {% endfor %}
+                        <input id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+                           class="input-file" type="file" size="100">
+                  </div>
+                </div>
+                {% endif %}
+                <!-- Select Basic -->
+                {# Standard Code for all the Email widgets in this app #}
+                {% if field.field.widget|klass == "EmailInput" %}
+                <div class="fieldWrapper  form-group">
+                    <label class="col-md-2 control-label" for="{{ field.id_for_label }}">
+                        {{ field.label_tag }}{% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                    <div class="col-md-8">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                    {% endfor %}
+                    <input id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+                        placeholder = "" class="form-control"
+                        type="text">
+                        <span class="help-block">{{ field.help_text }}</span>
+                    </div>
+                </div>
+                
+                {% endif %}
+                {# Standard Code for all the Email widgets in this app #}
+                {% if field.field.widget|klass == "CheckboxInput" %}
+                <!-- Multiple Checkboxes (inline) -->
+                <div class="form-group fieldWrapper">
+                    <label class="col-md-2 control-label" for="{{ field.id_for_label }}">
+                    {{ field.label_tag }}{% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                  <div class="col-md-4">
+                    <label class="checkbox-inline" for="{{ field.id_for_label }}">
+                      <input name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" type="checkbox"></label>
+                  </div>
+                </div>
+                
+                {% endif %}
+                {# Standard Code for all the URL widgets in this app #}
+                {% if field.field.widget|klass == "URLInput" %}
+                <div class="fieldWrapper  form-group">
+                    <label class="col-md-2 control-label" for="{{ field.id_for_label }}">
+                    {{ field.label_tag }}{% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                    <div class="col-md-8">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                    {% endfor %}
+                    <input id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+                        placeholder = "" class="form-control input-sm startup-input"
+                        type="text">
+                        <span class="help-block">{{ field.help_text }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {# Standard Code for all the URL widgets in this app #}
+                {% if field.field.widget|klass == "DateInput" %}
+                <div class="fieldWrapper  form-group">
+                    <label class="col-md-2 control-label" for="{{ field.id_for_label }}">
+                    {{ field.label_tag }}{% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                    <div class="col-md-8">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                    {% endfor %}
+                    <input id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+                        placeholder = "" class="form-control input-sm startup-input"
+                        type="text">
+                        <span class="help-block">{{ field.help_text }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {% if field.field.widget|klass == "Select" %}
+                <div class="fieldWrapper  form-group">
+                    <label class="col-md-2 control-label" for="{{ field.id_for_label }}">
+                    {{ field.label_tag }}{% if field.field.required %}<span class="asteriks"> *</span>{% endif %}</label>
+                    <div class="col-md-8">
+                    {% for error in field.errors %}
+                    <p id="required">{{ error }}</p>
+                    {% endfor %}
+                    <select id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+                        placeholder = "" class="form-control input-sm startup-input"
+                        type="text">
+                        {% for x, y in field.field.choices %}
+                        <option value="{{ x }}">{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">{{ field.help_text }}</span>
+                    </div>
+                </div>
+                {% endif %} 
+                {% endfor %}
+                <!-- Button -->
+                <div class="form-group submit-button">
+                  <label class="col-md-2 control-label" for="submit"></label>
+                  <div class="col-md-">
+                    <button id="submit" name="submit" class="btn-md btn-default">Submit</button>
+                  </div>
+                </div>
+            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endif %}
+{% endblock main %}

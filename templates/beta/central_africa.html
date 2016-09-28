@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load bootstrap_pagination %}
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+{% block main %}
+<div class="container-fluid published-container">
+    {% if beta_promoted %}
+    <div class="row">
+        <div class="col-md-2 promoted-startups">
+            <a href="{% url 'beta:contact_us' %}">Promoted</a>
+        </div>
+    </div>    
+    <div class="row">
+        {% for beta in beta_promoted %}
+        <div class="col-md-3 promoted col-sm-4 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!--<img src="{{ beta.home_page.url }}">-->
+                    <h1>{{ beta.startup }}</h1>
+                    {#% thumbnail beta.home_page "250x200" padding=True as im %#}
+                    <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">-->
+                    {#% endthumbnail %#}
+                    <img src="{{ beta.related_thumbnail.url }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">
+                    <h3>{{ beta.tagline|truncatechars:40 }}</h3>
+                    <ul class="list-inline pub-details">
+                        <!--<li><i class="fa fa-location-arrow" aria-hidden="true"></i> {{ beta.city }}</li>-->
+                        <li><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="{% url 'beta:country' beta.country %}">{{ beta.country|truncatechars:15 }}</a></li>
+                        <!--<li><i class="fa fa-globe" aria-hidden="true"></i> <a href="{% url 'beta:regions' beta.region %}">{{ beta.region }}</a></li>-->
+                        <!--<li>{{ beta.added_date|date:"M d, y" }}</li>-->
+                        <li><i class="fa fa-tag" aria-hidden="true"></i> {{ beta.category|truncatechars:15 }}</li>
+                    </ul>
+                    <ul class="list-inline btn-promoted">
+                        <li><a href="{% url 'beta:beta_details' beta.id beta.startup %}" role="button">Details</a></li>
+                        {% if not beta.user.is_staff %}
+                        <li><a href="{% url 'beta:signup' beta.id beta.startup %}" role="Notify Me">Signup</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-4 beta-startups">
+            <h1>Central African Startups</h1>
+            {% if len_region == 1 %}
+            <h3>{{ len_region }} Startup</h3>
+            {% else %}
+            <h3>{{ len_region }} Startups</h3>
+            {% endif %}
+        </div>
+    </div>
+    {% if central_africa_strt %}
+    <div class="row">
+        {% for beta in central_africa_strt %}
+        <div class="col-md-3 col-sm-4 col-xs-12 promoted">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>{{ beta.startup }}</h1>
+                    {#% thumbnail beta.home_page "250x200" padding=True as im %#}
+                    <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">-->
+                    {#% endthumbnail %#}
+                    <img src="{{ beta.related_thumbnail.url }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">
+                    <h3>{{ beta.tagline|truncatechars:40 }}</h3>
+                    <ul class="list-inline pub-details">
+                        <!--<li><i class="fa fa-location-arrow" aria-hidden="true"></i> {{ beta.city }}</li>-->
+                        <li><a href="{% url 'beta:country' beta.country %}"><i class="fa fa-map-marker" aria-hidden="true"></i> {{ beta.country|truncatechars:15 }}</a></li>
+                        <li><i class="fa fa-tag" aria-hidden="true"></i> {{ beta.category|truncatechars:15 }}</li><br>
+                        <li><i class="fa fa-calendar" aria-hidden="true"></i> {{ beta.pub_date|date:"M d, Y" }}</li>
+                    </ul>
+                    <ul class="list-inline btn-promoted">
+                        <li><a href="{% url 'beta:beta_details' beta.id beta.startup %}" role="button">Details</a></li>
+                        {% if not beta.user.is_staff %}
+                        <li><a href="{% url 'beta:signup' beta.id beta.startup %}">Notify Me</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-push-4">
+            {% bootstrap_paginate central_africa_strt range=5 previous_label="Prev" next_label="Next" show_first_last="true" first_label="First" last_label="Last" %}
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-6 col-md-push-3 else">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>There are no startup yet in Central African </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load disqus_tags %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Submit Startup" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+
+{% block main %}
+<div class="row">
+        <div class="col-md-6 col-md-push-2 submit-header">
+            <h1>Tell us about your startup!</h1>
+            <div class="panel panel-default submit-beta" id="beta-startups">
+                <div class="panel-body">
+                    <form action="{% url 'beta:submit_beta' %}" method="post" class="form"
+                    enctype="multipart/form-data">
+                      {% csrf_token %}
+                      {% bootstrap_form beta_form %}
+                      {% buttons %}
+                        <button type="submit" class="btn btn-primary" id="beta-button">
+                          {% bootstrap_icon "star" %} Submit
+                        </button>
+                      {% endbuttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock main %}

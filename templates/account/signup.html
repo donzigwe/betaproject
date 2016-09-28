@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid published-container submit-header">
+    <h1>{% trans "Sign Up" %}</h1>
+<div class="row">
+  <div class="col-md-4 col-md-push-4">
+    <div class="panel panel-default submit-beta">
+      <div class="panel-body" id="submit-beta">
+        <!--<p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login to-->
+        <!--{{site_name}}. As a final step, please complete the following form:{% endblocktrans %}</p>-->
+        <p>Already have an account? Please <a href="{% url 'account_login' %}">Login</a></p>
+        
+        <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          <div class="fieldWrapper form-group">
+            
+                <div class="g-recaptcha" data-sitekey="6LfzAykTAAAAAISorFiAsiaizaHQplcPEsYsOrQd"></div>
+            <div class="form-group">
+                <label class="control-label" for="submit"></label>
+          <button type="submit" class="btn btn-primary btn-md btn-block">{% trans "Sign Up" %} &raquo;</button>
+            </div>
+          <!--<button type="submit">{% trans "Sign Up" %} &raquo;</button>-->
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}

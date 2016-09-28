@@ -1,0 +1,58 @@
+{% extends 'beta/admin.html' %}
+{% load bootstrap_pagination %}
+
+{% block admin_search %}
+<div class="row">
+    <div class="col-md-8 col-md-push-2 signups">
+        {% if results %}
+        <table class="table table-striped">
+            <tr>
+                <th>S/No</th>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Startup</th>
+                <th>Stage</th>
+                <th>Status</th>
+                <th>Pub Date</th>
+                <th>Open</tr>
+            </tr>
+            
+            {% for startup in results %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ startup.user.first_name }} {{ startup.user.last_name }}</td>
+                <td>{{ startup.startup_id }}</td>
+                <td>{{ startup.startup }}</td>
+                <td>{{ startup.status }}</td>
+                {% if startup.pub_status == "Published" %}
+                <td>Published</td>
+                {% endif %}
+                {% if startup.pub_status == "Declined" %}
+                <td>Declined</td>
+                {% endif %}
+                {% if startup.pub_status == "Pending" %}
+                <td>Pending</td>
+                {% endif %}
+                <td>{{ startup.added_date|date:'b/d/y' }}</td>
+                <td><a href="{% url 'beta:startup' startup.startup_id %}">Open</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="row">
+        <div class="col-md-6 col-md-push-4" id="pagination">
+            {% bootstrap_paginate results range=5 previous_label="Prev" next_label="Next" show_first_last="true" first_label="First" last_label="Last" %}
+        </div>
+        {% else %}
+        <div class="col-md-4 col-md-push-4 published">
+            <div class="panel panel-default cont-published">
+                <div class="panel-body">
+                    <p>No result found for "{{ query }}"</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+    </div>
+    </div>
+</div>
+{% endblock admin_search %}

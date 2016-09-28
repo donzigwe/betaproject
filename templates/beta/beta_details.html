@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load disqus_tags %}
+{% load social_share %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+{% load myforms %}
+
+
+{% block main %}
+<div class="container-fluid published-container">
+    {% if beta_details %}
+    <div class="row">
+        <div class="col-md-6 col-md-push-1 col-sm-6 col-sm-push-1 col-lg-5 col-lg-push-2 published-content">
+            <h1>{{ beta_details.startup }}<br><small>{{ beta_details.tagline }}</small></h1>
+            {#% thumbnail beta_details.home_page "600x330" as im %#}
+            <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+            alt="{{ beta_details.startup }} image" class="img-responsive">-->
+            {#% endthumbnail %#}
+            <img src="{{ beta_details.details_thumbnail.url }}"
+            alt="{{ beta_details.startup }} image" class="img-responsive">
+            <p>{{ beta_details.description }}</p>
+        </div>
+        <div class="col-md-4 col-md-push-1 col-sm-4 col-sm-push-1 col-lg-3 col-lg-push-2">
+            <div class="panel panel-default beta-panel">
+                <div class="panel-body" id="beta-details-body">
+                    {% if not beta_details.logo %}
+                    <img src="{% static 'images/sample-logo.png' %}" alt="{{ beta_details.startup }} Logo">
+                    {% else %}
+                   {% thumbnail beta_details.logo "100x100" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                        alt="{{ team.startup }} image">
+                    {% endthumbnail %}
+                    <!--<img src="{{ beta_details.logo_thumbnail.url }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">-->
+                    {% endif %}
+                    <ul class="list-unstyled" id="beta-details">
+                        <li><span>Status</span><br> {{ beta_details.stat }}</li>
+                        <li><span>Category </span><br>{{ beta_details.category }}</li>
+                        <li><span>City</span><br> {{ beta_details.city }}</li>
+                        <li><span>Country</span><br> {{ beta_details.country }}</li>
+                        <li><span>Region</span><br> {{ beta_details.region }}</li>
+                        <li><span>Published</span><br> {{ beta_details.pub_date|date:"M d, Y" }}</li>
+                        {% if not beta_details.user.is_staff %}
+                        <li><span>Early Access</span><br> {{ signups }}</li>
+                        {% endif %}
+                    </ul>
+                    <ul class="list-inline btn-promoted">
+                        <li><a href="{{ beta_details.url }}" target="_blank">Visit Site</a></li>
+                        <li><a href="{% url 'beta:signup' beta_details.id beta_details.startup %}" role="button">Notify Me</a></li>
+                    </ul>
+                    <ul class="list-inline social">
+                        <li><a href="#" target="_blank">{% post_to_facebook object_or_url '<i class="fa fa-facebook-official fa-3x"></i>' %}</a></li>
+                        <li><a href="#" target="_blank">{% post_to_twitter "Checkout this product: {{beta_details.startup}} {{beta_details.tagline}}" object_or_url '<i class="fa fa-twitter-square fa-3x"></i>' %}</a></li>
+                    </ul>
+                    
+                </div>
+            </div>
+                {% if teams %}
+                <div class="panel panel-default beta-panel">
+                    <div class="panel-body" id="beta-details-body">
+                        <div class="row">
+                            {% for team in teams %}
+                            <div class="col-md-5 col-md-push-1 team">
+                                {% thumbnail team.photo "150x100" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                                alt="{{ team.startup }} image" class="img-responsive">
+                                {% endthumbnail %}
+                                <ul class="list-unstyled btn-promoted">
+                                    <li><a href="https://twitter.com/{{ team.twitter_handle|slice:'1:' }}" target="_blank" >{{ team.full_name }}</a></li>
+                                    <li>{{ team.role }}</li>
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <p>There is no details in this startup</p>
+    {% endif %}
+
+    {% if related_beta %}
+    <div class="row">
+        <div class="col-md-3 beta-startups">
+            <h1>Similar Startups</h1>
+        </div>
+    </div>
+    <div class="row">
+        {% for beta in related_beta %}
+        <div class="col-md-3 col-sm-4 col-xs-12 col-lg-3 promoted">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>{{ beta.startup }}</h1>
+                    {#% thumbnail beta.home_page "250x200" padding=True as im %#}
+                    <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">-->
+                    {#% endthumbnail %#}
+                    <img src="{{ beta.related_thumbnail.url }}"
+                    alt="{{ beta.startup }} image" class="img-responsive">
+                    <h3>{{ beta.tagline|truncatechars:40 }}</h3>
+                    <ul class="list-inline pub-details">
+                        <!--<li><i class="fa fa-location-arrow" aria-hidden="true"></i> {{ beta.city }}</li>-->
+                        <li><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="#">{{ beta.country|truncatechars:15 }}</a></li>
+                        <li><i class="fa fa-globe" aria-hidden="true"></i> <a href="#">{{ beta.region }}</a></li><br>
+                        <li><i class="fa fa-tag" aria-hidden="true"></i> {{ beta.category|truncatechars:15 }}</li>
+                        <li><i class="fa fa-calendar" aria-hidden="true"></i> {{ beta.pub_date|date:"M d, Y" }}</li>
+                    </ul>
+                    <ul class="list-inline btn-promoted">
+                        <li><a href="{% url 'beta:beta_details' beta.id beta.startup %}" role="button">Details</a></li>
+                        {% if not beta.user.is_staff %}
+                        <li><a href="{% url 'beta:beta_details' beta.id beta.startup %}" role="button">Signup</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-6 col-md-push-3">
+            {% disqus_show_comments %}
+        </div>
+    </div>
+</div>
+{% endblock main %}

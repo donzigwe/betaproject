@@ -1,0 +1,16 @@
+ {% extends 'base.html' %}
+ {% block main %}
+ <div class="contianer-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-push-3">
+            <ul class="list-inline">
+                <li><a href="{% url 'beta:beta_user' %}">Startups</a></li>
+                <li><a href="{% url 'beta:testing_app' %}">Feedbacks</a></li>
+                <li><a href="#">Test Invites</a></li>
+                <li><a href="#">Rewards</a></li>
+            </ul>
+        </div>
+    </div>
+    {% block beta_user %}{% endblock beta_user %}
+ </div>
+ {% endblock main %}

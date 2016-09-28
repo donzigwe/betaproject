@@ -1,0 +1,248 @@
+{% extends 'beta/user_beta.html' %}
+{% load static %}
+{% load disqus_tags %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+{% load myforms %}
+
+
+{% block user_admin %}
+<div class="container-fluid published-container">
+    {% if beta_details %}
+    <div class="row">
+        <div class="col-md-6 col-md-push-1 published-content">
+            <h1>{{ beta_details.startup }}<br><small>{{ beta_details.tagline }}</small></h1>
+            {#% thumbnail beta_details.home_page "600x330" as im %#}
+            <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+            alt="{{ beta_details.startup }} image">-->
+            {#% endthumbnail %#}
+            <img src="{{ beta_details.details_thumbnail.url }}"
+            alt="{{ beta_details.startup }} image" class="img-responsive">
+            <p>{{ beta_details.description }}</p>
+            <ul class="list-inline btn-promoted">
+                    <div class="modal fade" id="editbetaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header submit-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">Edit Startup</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-10 col-md-push-1">
+                                        <form class="form-horizontal" method="POST", action="{% url 'beta:beta_user_details' beta_details.id beta_details.startup %}"
+                                        enctype="multipart/form-data">
+                                            {#% csrf_token %#}
+                                            {#% bootstrap_form  %#}
+                                            {#% buttons %#}
+                                            <button type="submit" class="btn btn-primary">
+                                            {#% bootstrap_icon "star" %#} Submit
+                                            </button>
+                                            {#% endbuttons %#}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                <!--<a class="btn btn-default" href="" role="button" data-toggle="modal" data-target="#editbetaModal">Edit</a>-->
+                {% if not beta_details.pub_status == "Published"%}
+                <li><a href="{% url 'beta:edit_beta' beta_details.startup_id %}">Edit</a></li>
+                {% endif %}
+                <li>{% if not beta_details.pub_status == "Published" %}
+                    <a href="" data-toggle="modal" data-target="#deletestartupModal">Delete</a>
+                    {% endif %}</li>
+                    <div class="row">
+                    <div class="col-md-4 col-md-push-3">
+                        <div class="modal fade" id="deletestartupModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header submit-header">
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                  <h1 class="modal-title" id="myModalLabel">Delete Confirmation</h1>
+                                </div>
+                                <div class="modal-body submit-beta">
+                                    <div class="row">
+                                        <div class="col-md-10 col-md-push-1">
+                                            <p>Are you sure you want to delete {{ beta_details.startup }}?</p>
+                                            <ul class="list-inline btn-promoted">
+                                                <li><a href="{% url 'beta:delete_startup' beta_details.startup_id %}" role="button">Delete</a></li>
+                                                <li><a href="" role="button" data-dismiss="modal">Cancel</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+            </ul>
+        </div>
+        <div class="col-md-4 col-md-push-1">
+            <div class="panel panel-default beta-panel">
+                <div class="panel-body" id="beta-details-body">
+                    {% if not beta_details.logo %}
+                    <img src="{% static 'images/sample-logo.png' %}" alt="{{ beta_details.startup }} Logo">
+                    {% else %}
+                    {% thumbnail beta_details.logo "100x100" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                        alt="{{ team.startup }} image">
+                    {% endthumbnail %}
+                    {% endif %}
+                    <ul class="list-unstyled btn-promoted" id="beta-details">
+                        <li><span>Status</span><br> {{ beta_details.stat }}</li>
+                        <li><span>Category </span><br>{{ beta_details.category }}</li>
+                        <li><span>City</span><br> {{ beta_details.city }}</li>
+                        <li><span>Country</span><br> {{ beta_details.country }}</li>
+                        <li><span>Region</span><br> {{ beta_details.region }}</li>
+                        <li><span>Published</span><br> {{ beta_details.added_date|date:"M d, Y" }}</li>
+                        {% if signups == 0 %}
+                        <li><span>Signups</span><br> <a href="{% url 'beta:signups' beta_details.startup_id %}"> {{ len_signups }} Signups</a></li>
+                        {% elif signups == 1 %}
+                        <li><span>Signups</span><br> <a href="{% url 'beta:signups' beta_details.startup_id %}"> {{ len_signups }} Signup</a></li>
+                        {% else %}
+                        <li><span>Signups</span><br> <a href="{% url 'beta:signups' beta_details.startup_id %}"> {{ len_signups }} Signups</a></li>
+                        {% endif %}
+                        <li></li>
+                        <li><a href="{% url 'beta:export_signups' beta_details.startup_id %}">Export Sigups</a></li>
+                    </ul>
+                    <ul class="list-inline btn-promoted">
+                        <li><a href="{{ beta_details.url }}"
+                        target="_blank">{{ beta_details.url }}</a></li>
+                    </ul>
+                    <ul class="list-inline social">
+                        <li><a href="#" target="_blank">
+                        <i class="fa fa-facebook-official fa-3x"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fa fa-twitter-square fa-3x"></i></a></li>
+                    </ul>
+                    
+                </div>
+            </div>
+                {% if teams %}
+                <div class="panel panel-default beta-panel">
+                    <div class="panel-body">
+                        <div class="row" id="beta-details-body">
+                            {% for team in teams %}
+                            <div class="col-md-5 col-md-push-1 team">
+                                {% thumbnail team.photo "150x100" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                                alt="{{ team.startup }} image">
+                                {% endthumbnail %}
+                                <ul class="list-unstyled btn-promoted">
+                                    {% if team.twitter_handle %}
+                                    <li><a href="https://twitter.com/{{ team.twitter_handle|slice:'1:' }}" target="_blank" >{{ team.full_name }}</a></li>
+                                    {% else %}
+                                    <li>{{ team.full_name }}</li>
+                                    {% endif %}
+                                    <li>{{ team.role }}</li>
+                                </ul>
+                                <ul class="list-inline btn-promoted">
+                                    {% if not team.startup.pub_status == "Published" %}
+                                    <li><a href="{% url 'beta:delete_team' team.id %}">Delete</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    <div class="modal fade" id="addteamModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header submit-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h1 class="modal-title" id="myModalLabel">Add Team</h1>
+                            </div>
+                            <div class="modal-body submit-beta">
+                                <div class="row">
+                                    <div class="col-md-10 col-md-push-1">
+                                        <form class="form-horizontal" method="POST", action="{% url 'beta:beta_user_details' beta_details.id beta_details.startup %}"
+                                        enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            {% bootstrap_form add_team %}
+                                            {% buttons %}
+                                            <button type="submit" class="btn btn-primary">
+                                            {% bootstrap_icon "star" %} Submit
+                                            </button>
+                                            {% endbuttons %}
+                                
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    
+                    <ul class="list-inline btn-promoted">
+                        {% if not beta_details.pub_status == "Published" %}
+                        <li><a href="" data-toggle="modal" data-target="#addteamModal">Add more</a></li>
+                        {% endif %}
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        <div class="beta-details-body">
+            {% if not beta_details.pub_status == "Published" %}
+            <a href="" role="button" data-toggle="modal" data-target="#addteamModal">Add more</a>
+            {% endif %}
+        </div>
+            {% else %}
+            <div class="row">
+                <div class="col-md-8 col-md-push-2">
+                    {% if not beta_details.pub_status == "Published" %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="modal fade" id="addteamModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header submit-header">
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                      <h1 class="modal-title" id="myModalLabel">Add Team</h1>
+                                    </div>
+                                    <div class="modal-body submit-beta">
+                                        <div class="row">
+                                            <div class="col-md-10 col-md-push-1">
+                                                <form class="form-horizontal" method="POST", action="#"
+                                                enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    {% bootstrap_form add_team %}
+                                                    {% buttons %}
+                                                    <button type="submit" class="btn btn-primary">
+                                                    {% bootstrap_icon "star" %} Submit
+                                                    </button>
+                                                    {% endbuttons %}
+                                        
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                            <ul class="list-inline btn-promoted">
+                                <li><a href=""  data-toggle="modal" data-target="#addteamModal">Add Team</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <p>There is no details in this startup</p>
+    {% endif %}
+{% endblock user_admin %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load bootstrap_pagination %}
+
+{% block main %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-push-2 signups">
+            <h3>{{ startup.startup }}<br><small>{{ startup.tagline }}</small></h3>
+            <h3>{% if len_signups == 1 or len_signups == 0 %} {{ len_signups }} Signup {% else %} {{ len_signups }} Signups {% endif %}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-push-2 signups">
+            {% if user_signups %}
+            <table class="table">
+                <tr>
+                    <th>No</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Date</th>
+                </tr>
+                {% for signup in user_signups %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ signup.user.first_name }}</td>
+                    <td>{{ signup.user.last_name }}</td>
+                    <td>{{ signup.user.email }}</td>
+                    <td>{{ signup.signup_date }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="row">
+                <div class="col-md-6 col-md-push-4">
+                    {% bootstrap_paginate user_signups range=5 previous_label="Prev" next_label="Next" show_first_last="true" first_label="First" last_label="Last" %}
+                </div>
+            </div>
+            {% else %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>You have no signup yet for your startup!</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% for signup in my_signups %}
+    {{ signup.first_name }}
+    {% endfor %}
+</div>
+{% endblock main %}

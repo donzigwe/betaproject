@@ -1,0 +1,43 @@
+{% extends 'beta/user_admin.html' %}
+{% load thumbnail %}
+{% block beta_user %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-push-3">
+            {% if test_app %}
+            <div class="row">
+                {% for test in test_app %}
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {% thumbnail test.logo "100x100" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                                    alt="{{ beta_details.startup }} image">
+                                    {% endthumbnail %}
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{ test.name }} <i>{{test.status}}</i></p>
+                                    <p>{{ test.tagline }}</p>
+                                    <p>Starting on: {{ test.start_date }} Ending on: {{ test.end_date }}</p>
+                                    <ul class="list-inline">
+                                        <li>{% if test.status == "Approved" %}<a href="#">View Comments</a>{% endif %}</li>
+                                        {% if test.status == "Pending" %}
+                                        <li><a href="{% url 'beta:edit_testing' test.test_id %}">Edit</a></li>
+                                        <li><a href="#">Delete</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% block edit_testing %}{% endblock edit_testing %}
+</div>
+{% endblock beta_user %}

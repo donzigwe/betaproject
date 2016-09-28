@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block main %}
+<div class="container-fluid published-container" id="user-account">
+        <div class="row">
+                <div class="col-md-4 col-md-push-5 ">
+                        <ul class="list-inline regions">
+                                <li><a href="{% url 'beta:beta_user' %}">Notify Me</a></li>
+                                <li><a href="{% url 'beta:mystartup' %}">My Startup</a></li>
+                        </ul>
+                </div>
+        </div>
+{% block mystartup %}{% endblock mystartup %}
+{% block user_admin %}{% endblock user_admin %}
+{% if my_signups %}
+<div class="row">
+{% for startup in my_signups %}
+<div class="col-md-3 promoted">
+        <div class="panel panel-default">
+                <div class="panel-body" id="beta-details-body">
+                {% if not startup.startup.logo %}
+                <img src="{% static 'images/sample-logo.png' %}" alt="{{ beta_details.startup }} Logo">
+                {% else %}
+                {% thumbnail startup.startup.logo "100x100" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                alt="{{ team.startup }} image">
+                {% endthumbnail %}  
+                <!--<img src="{{ beta.logo_thumbnail.url }}"
+                alt="{{ beta.startup }} logo" class="img-responsive"-->
+                {% endif %}
+                 <h1>{{ startup.startup.startup }}</h1>
+                    {% thumbnail beta.home_page "250x400" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                        alt="{{ beta_details.startup }} image">
+                    {% endthumbnail %} 
+                    <h3>{{ startup.startup.tagline|truncatechars:40 }}</h3>
+                    <!--<ul class="list-unstyled">
+                        <li><span>Remaining</span> {{ startup.startup.launching|timeuntil }}</li>
+                   </ul>-->
+                    <ul class="list-inline btn-promoted">
+                        <li><a href="{% url 'beta:beta_details' startup.startup.id startup.startup.startup %}">View More</a></li>
+                        <li><a href="{{ startup.startup.url }}" target="_blank">Visit Site</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+</div>
+{% else %}
+<div class="row">
+        <div class="col-md-6 col-md-push-3 else">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>You Have not opted to be notified  <a href="{% url 'beta:index' %}">Go Back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+</div>   
+{% endblock main %}

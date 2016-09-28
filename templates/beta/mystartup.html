@@ -1,0 +1,60 @@
+{% extends 'beta/user_beta.html' %}
+{% load thumbnail %}
+
+{% block mystartup %}
+<div class="container-fluid">
+    {% if user_beta %}
+            <div class="row">
+                <div class="col-md-8 col-md-push-2">
+            {% for beta in user_beta %}
+                        <div class="col-md-12 promoted">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <!--<img src="{{ beta.home_page.url }}">-->
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                    {#% thumbnail beta.home_page "250x300" as im %#}
+                                        <!--<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                                        alt="{{ beta_details.startup }} image">-->
+                                    {#% endthumbnail %#}
+                                     <img src="{{ beta.related_thumbnail.url }}"
+                                    alt="{{ beta.startup }} image" class="img-responsive">
+                                        </div>
+                                        <div class="col-md-7">
+                                    <h1>{{ beta.startup }}</h1>
+                                    <h3>{{ beta.tagline|truncatechars:40 }}</h3>
+                                    <ul class="list-unstyled">
+                                        {% if beta.pub_status == "Published" %}
+                                        <li>Status: Published</li>
+                                        {% endif %}
+                                        {% if beta.pub_status == "Declined" %}
+                                        <li>Status: Declined</li>
+                                        {% endif %}
+                                        {% if beta.pub_status == "Pending" %}
+                                        <li>Status: Pending</li>
+                                        {% endif %}
+                                   </ul>
+                                    <ul class="list-inline btn-promoted">
+                                        <li><a href="{% url 'beta:beta_user_details' beta.id beta.startup %}" role="button">Details</a></li>
+                                        <!--<li><a href="{#% url 'beta:signups' beta.startup_id %#}" role="button">Signup</a></li>-->
+                                    </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="row">
+        <div class="col-md-7 col-md-push-2 else">
+                    <div class="panel panel-default">
+                            <div class="panel-body">
+                                <p>Your have not submitted any startup, Submit your startup <a href="{% url 'beta:submit_beta' %}">Here</a></p>
+                            </div>
+                        </div>
+                    </div>
+            {% endif %}
+</div>
+{% endblock mystartup %}

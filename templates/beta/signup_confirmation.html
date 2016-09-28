@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container-fluid published-container">
+    {% if signedup %}
+    <div class="col-md-6 col-md-push-3 else promoted">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>You have already opted to be notified by {{ signedup_startup }}.
+                    <a href="{% url 'beta:index' %}">Go back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if not_signedup %}
+    
+    <div class="col-md-6 col-md-push-3 else promoted">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>Thanks for opting to be notified by {{ not_signedup_startup }}. <a href="{% url 'beta:index' %}">Go Back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock main %}

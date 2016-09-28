@@ -1,0 +1,65 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% block content %}
+<div class="container-fluid published-container submit-header">
+  <h1>{% trans "Sign In" %}</h1>
+  <div class="row">
+    <div class="col-md-4 col-md-push-4">
+      <div class="panel panel-default submit-beta" >
+        <div class="panel-body" id="submit-beta">
+            {#% get_providers as socialaccount_providers %#}
+            
+            {#% if socialaccount_providers %#}
+            <!--<p>{#% blocktrans with site.name as site_name %}Don't have an account? Please
+            <a href="{{ signup_url }}">Sign Up</a>{#% endblocktrans %#}</p>
+            <p>Login with</p>
+            <div class="socialaccount_ballot">
+            
+              <ul class="socialaccount_providers list-inline social">
+                <li><a title="Facebook" class="facebook"
+                href="{% provider_login_url 'facebook' process='facebook' %}">
+                <i class="fa fa-facebook-square fa-3x facebook-login"></i></a></li>
+                <li><a title="Twitter" class="twitter"
+                href="{% provider_login_url 'twitter' process='twitter' %}">
+                <i class="fa fa-twitter-square fa-3x twitter-login"></i></a></li>
+                <br>
+            </div>
+            <p class="login-or">{% trans 'or' %}</p>-->
+            
+            {#% include "socialaccount/snippets/login_extra.html" %#}
+            
+            {#% else %#}
+            <!--<p>{% blocktrans %}If you have not created an account yet, then please
+            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>-->
+            {#% endif %#}
+            
+            <form class="login" method="POST" action="{% url 'account_login' %}">
+              {% csrf_token %}
+              {% bootstrap_form form %}
+              {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+              {% endif %}
+              <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+              <!--<button class="primaryAction" type="submit">{% trans "Sign In" %}</button>-->
+              <button type="submit" class="btn btn-primary btn-md btn-block primaryAction">{% trans "Sign Up" %} &raquo;</button>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+</div>
+
+{% endblock %}

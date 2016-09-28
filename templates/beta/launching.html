@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% load bootstrap3 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load thumbnail %}
+
+{% block main %}
+<div class="jumbotron startup-banner">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-md-push-2">
+          <h3>Launching This Week<br>
+          <small>Meet the Innovative Startups going live this week all over Africa</small></h3>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    {% if this_week %}
+    <div class="row">
+        {% for beta in this_week %}
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <!--<img src="{{ beta.home_page.url }}">-->
+                            <p>{{ beta.startup }}</p>
+                            {% thumbnail beta.home_page "365x200" as im %}
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"
+                            alt="{{ beta.startup }} image">
+                            {% endthumbnail %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>{{ beta.tagline }}</p>
+                            <p><a href="#">{{ beta.city }}</a> <a href="#">{{ beta.country }}</a> <a href="#">{{ beta.region }}</a></p>
+                            <a class="btn btn-default" href="{% url 'beta:beta_details' beta.startup_id %}" role="button">Details</a>                    
+                            <a class="btn btn-default" href="" role="button" data-toggle="modal" data-target="#signupModal">Signup</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
+            <p>No Startup is launching this week </p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
