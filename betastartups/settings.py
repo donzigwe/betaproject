@@ -113,7 +113,6 @@ WSGI_APPLICATION = 'betastartups.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES['default'] =  dj_database_url.config()
 
 DATABASES = {
     'default': {
@@ -196,5 +195,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 NORECAPTCHA_SITE_KEY = "6LfzAykTAAAAAISorFiAsiaizaHQplcPEsYsOrQd"
 NORECAPTCHA_SECRET_KEY = "6LfzAykTAAAAAH8Ho-NEUoXO3k_lLjQtIiKzwiQT"
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 ACCOUNT_LOGOUT_ON_GET = True
